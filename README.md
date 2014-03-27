@@ -1,4 +1,4 @@
 AHK-spirograph
 ==============
 
-Short and sweet AHK scripts that create interesting images
+Short and sweet, GDI based AHK scripts that create interesting images
