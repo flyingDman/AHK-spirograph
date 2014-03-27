@@ -1,0 +1,77 @@
+#SingleInstance, Force
+#NoEnv
+#NoTrayIcon 
+SetBatchLines, -1
+Run, white.ahk, , , oVarPID
+winwait, white
+gui, 1:	+AlwaysOnTop +E0x20 +E0x80000 +ToolWindow +Hwndhwnd1
+gui, 1: Show,, Spirograph
+
+pToken 	:= Gdip_Startup()
+hbm 	:= CreateDIBSection(A_ScreenWidth, A_ScreenHeight)
+hdc 	:= CreateCompatibleDC()
+obm 	:= SelectObject(hdc, hbm)
+g 		:= Gdip_GraphicsFromHDC(hdc)
+
+pPen 	:= Gdip_CreatePen("0xFFb90b0b", 1)					;set the color and the thickness of the line (thin is 1)
+
+pPen1 	:= Gdip_BrushCreateSolid(0xaa323baa)
+pPen2 	:= Gdip_BrushCreateSolid(0xaa126d11)
+pPen3 	:= Gdip_BrushCreateSolid(0xaab90b0b)
+pPen4 	:= Gdip_BrushCreateSolid(0xaaffe13f)
+pPen5 	:= Gdip_BrushCreateSolid(0xaaa30ba5)
+pPen6 	:= Gdip_BrushCreateSolid(0xaaC65e1e)
+pPen7 	:= Gdip_BrushCreateSolid(0xaa5fe30F)
+pPen8 	:= Gdip_BrushCreateSolid(0xaa3dc6d7)
+pPen9 	:= Gdip_BrushCreateSolid(0xaaFFFFFF)
+
+loop,633
+	{	
+	if a_index < 100
+		continue
+	if a_index = 346
+		sleep, 700
+	rds1 := 1000 / a_index + 500
+	rds2 := - 1 * a_index + 50
+	rds3 := 203
+	tpcrnrx1 := (cntrx := a_screenwidth / 2) - rds1
+	tpcrnry1 := (cntry := a_screenheight / 2) - rds1
+	tpcrnrx2 :=  cntrx  - rds2
+	tpcrnry2 :=  cntry  - rds2
+	w = 44
+	dif := rds2 - rds1 
+
+	Gdip_FillEllipse(G, pPen1, tpcrnrx1					, tpcrnry1 - ( dif)				, 2*rds1, 2*rds1)     ; 12 		o'clock
+	Gdip_FillEllipse(G, pPen2, tpcrnrx1 + (w + dif /2)	, tpcrnry1 - (w + dif /2)		, 2*rds1, 2*rds1)     ; 1.5 	o'clock
+	Gdip_FillEllipse(G, pPen3, tpcrnrx1 +  dif			, tpcrnry1 						, 2*rds1, 2*rds1)     ; 3 		o'clock
+	Gdip_FillEllipse(G, pPen4, tpcrnrx1 + (w + dif /2)	, tpcrnry1 + (w + dif /2)		, 2*rds1, 2*rds1)     ; 4.5 	o'clock
+	Gdip_FillEllipse(G, pPen5, tpcrnrx1					, tpcrnry1 +   dif				, 2*rds1, 2*rds1)     ; 6 		o'clock
+	Gdip_FillEllipse(G, pPen6, tpcrnrx1 - (w + dif /2)	, tpcrnry1 + (w + dif /2)		, 2*rds1, 2*rds1)     ; 7.5 	o'clock
+	Gdip_FillEllipse(G, pPen7, tpcrnrx1 - (dif)			, tpcrnry1 						, 2*rds1, 2*rds1)     ; 9 		o'clock
+	Gdip_FillEllipse(G, pPen8, tpcrnrx1 - (w + dif /2)	, tpcrnry1 - (w + dif /2)		, 2*rds1, 2*rds1)     ; 10.5 	o'clock
+
+	Gdip_FillEllipse(G, pPen9, cntrx - rds3				, cntry	-rds3					, 2*rds3, 2*rds3)
+
+	Gdip_DrawEllipse(G, pPen, tpcrnrx2 					, tpcrnry2						, 2*rds2, 2*rds2)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1					, tpcrnry1 +   dif				, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 +  dif			, tpcrnry1 						, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1					, tpcrnry1 - ( dif)				, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 - (dif)			, tpcrnry1 						, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 + (w + dif /2)	, tpcrnry1 + (w + dif /2)		, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 + (w + dif /2)	, tpcrnry1 - (w + dif /2)		, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 - (w + dif /2)	, tpcrnry1 + (w + dif /2)		, 2*rds1, 2*rds1)
+	Gdip_DrawEllipse(G, pPen, tpcrnrx1 - (w + dif /2)	, tpcrnry1 - (w + dif /2)		, 2*rds1, 2*rds1)
+
+UpdateLayeredWindow(hwnd1, hdc, 0, 0, A_ScreenWidth, A_ScreenHeight)   	 	; Draw everything
+;sleep,1
+	}
+settimer, destroy, -5000
+return
+
+
+#IfWinActive, Spirograph
+esc::
+destroy:
+gui 1: destroy
+process, close, %oVarPID%
+exitapp
